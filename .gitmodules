@@ -1,0 +1,3 @@
+[submodule "src/lib/mvhr-bypass-common"]
+	path = src/lib/mvhr-bypass-common
+	url = https://github.com/radusalagean/mvhr-bypass-common.git

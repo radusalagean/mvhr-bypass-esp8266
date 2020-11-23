@@ -16,26 +16,26 @@ void Ota::init()
             type = "filesystem";
         }
 
-        Serial.println("Start updating " + type);
+        Serial1.println("Start updating " + type);
     });
     ArduinoOTA.onEnd([]() {
-        Serial.println("\nEnd");
+        Serial1.println("\nEnd");
     });
     ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-        Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+        Serial1.printf("Progress: %u%%\r", (progress / (total / 100)));
     });
     ArduinoOTA.onError([](ota_error_t error) {
-        Serial.printf("Error[%u]: ", error);
+        Serial1.printf("Error[%u]: ", error);
         if (error == OTA_AUTH_ERROR) {
-        Serial.println("Auth Failed");
+        Serial1.println("Auth Failed");
         } else if (error == OTA_BEGIN_ERROR) {
-        Serial.println("Begin Failed");
+        Serial1.println("Begin Failed");
         } else if (error == OTA_CONNECT_ERROR) {
-        Serial.println("Connect Failed");
+        Serial1.println("Connect Failed");
         } else if (error == OTA_RECEIVE_ERROR) {
-        Serial.println("Receive Failed");
+        Serial1.println("Receive Failed");
         } else if (error == OTA_END_ERROR) {
-        Serial.println("End Failed");
+        Serial1.println("End Failed");
         }
     });
     ArduinoOTA.begin();

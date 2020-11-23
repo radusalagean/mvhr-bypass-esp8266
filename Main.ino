@@ -1,38 +1,39 @@
 #include "src/Network.h"
 #include "src/Ota.h"
+#include "src/SerialNetwork.h"
+#include "src/lib/mvhr-bypass-common/arduino-esp8266/LocalContract.h"
+#include "src/lib/mvhr-bypass-common/arduino-esp8266/TransmissionPacket.h"
 
 #define BAUD_RATE 9600
+// #define BAUD_RATE 115200 // to be used for direct serial communication
 
 Network network;
 Ota ota;
+SerialNetwork serialNetwork;
 
 void setup() {
     Serial.begin(BAUD_RATE);
-    Serial.println("Booting");
+    Serial1.begin(BAUD_RATE);
+
+    Serial1.println("Booting");
     
     network.init();
     ota.init();
     
-    Serial.println("Ready");
-    Serial.print("IP address: ");
-    Serial.println(network.getIpAddress());
-
-    pinMode(LED_BUILTIN, OUTPUT);
+    Serial1.println("Ready");
+    Serial1.print("IP address: ");
+    Serial1.println(network.getIpAddress());
 }
+
+unsigned long lastTime = 0UL;
 
 void loop() {
     ota.handle();
-
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(500);
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(100);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(100);
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(100);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(100);
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(100);
+    serialNetwork.handleOutstandingPackets();
+    if (millis() - lastTime > 15000)
+    {
+        TransmissionPacket packet = {LOCAL_CONTRACT_CODE_REQUEST_STATE, 0, NULL};
+        serialNetwork.sendPacket(packet);
+        lastTime = millis();
+    }
 }
