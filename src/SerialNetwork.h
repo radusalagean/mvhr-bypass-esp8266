@@ -4,6 +4,10 @@
 #include "lib/mvhr-bypass-common/arduino-esp8266/BaseSerialNetwork.h"
 #include "HardwareSerialWrapper.h"
 
+class SerialNetwork;
+
+#include "Socket.h"
+
 class SerialNetwork : public BaseSerialNetwork
 {
 private:
@@ -14,6 +18,7 @@ private:
 
 public:
     SerialNetwork();
+    void requestState();
 };
 
 #endif

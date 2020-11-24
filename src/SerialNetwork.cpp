@@ -23,16 +23,12 @@ void SerialNetwork::receiveState(const byte* body)
     size_t sizeOfState = sizeof(State);
     State* statePtr = new State;
     memcpy(statePtr, body, sizeOfState);
-    debugLineSerial.print(statePtr->hrModeAuto);
-    debugLineSerial.print(" ");
-    debugLineSerial.print(statePtr->hrDisabled);
-    debugLineSerial.print(" ");
-    debugLineSerial.print(statePtr->intEvMin);
-    debugLineSerial.print(" ");
-    debugLineSerial.print(statePtr->extAdMin);
-    debugLineSerial.print(" ");
-    debugLineSerial.print(statePtr->extAdMax);
-    debugLineSerial.print(" ");
-    debugLineSerial.println(statePtr->hysteresis);
+    Socket::sendState(statePtr);
     delete statePtr;
+}
+
+void SerialNetwork::requestState()
+{
+    TransmissionPacket packet = {LOCAL_CONTRACT_CODE_REQUEST_STATE, 0, NULL};
+    sendPacket(packet);
 }
