@@ -3,6 +3,7 @@
 
 #include <WebSocketsServer.h>
 #include "lib/mvhr-bypass-common/arduino-esp8266/State.h"
+#include "ArduinoJson.h"
 
 class Socket;
 

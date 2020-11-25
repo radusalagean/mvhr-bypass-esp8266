@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceRoot}/**",
                 "${env:userprofile}/AppData/Local/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/**",
-                "${env:userprofile}/Documents/Arduino/libraries/arduinoWebSockets-2.3.1"
+                "${env:userprofile}/Documents/Arduino/libraries/arduinoWebSockets-2.3.1",
+                "${env:userprofile}/Documents/Arduino/libraries/ArduinoJson"
             ],
             "intelliSenseMode": "gcc-x86",
             "compilerPath": "${env:programfiles(x86)}/Arduino/hardware/tools/avr/bin/avr-gcc.exe",

@@ -18,10 +18,19 @@ void Socket::loop()
 
 void Socket::sendState(State* state)
 {
-    char response[20] = {};
-    int length = sprintf(response, "%d %d %u %u %u %f", state->hrModeAuto, state->hrDisabled,
-            state->intEvMin, state->extAdMin, state->extAdMax, state->hysteresis);
-    webSocket.sendTXT(clientNum, response, length);
+    const int capacity = JSON_OBJECT_SIZE(6);
+    StaticJsonDocument<capacity> doc;
+    doc["hrModeAuto"] = state->hrModeAuto;
+    doc["hrDisabled"] = state->hrDisabled;
+    doc["intEvMin"] = state->intEvMin;
+    doc["extAdMin"] = state->extAdMin;
+    doc["extAdMax"] = state->extAdMax;
+    doc["hysteresis"] = state->hysteresis;
+    int outputLength = measureJson(doc);
+    char* jsonString = new char[outputLength + 1];
+    serializeJson(doc, jsonString, outputLength + 1);
+    webSocket.sendTXT(clientNum, jsonString, outputLength);
+    delete[] jsonString;
 }
 
 void Socket::webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length)
