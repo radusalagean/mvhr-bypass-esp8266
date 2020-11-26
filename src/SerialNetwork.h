@@ -13,12 +13,15 @@ class SerialNetwork : public BaseSerialNetwork
 private:
     HardwareSerialWrapper dataLineSerial = HardwareSerialWrapper(&Serial);
     HardwareSerialWrapper debugLineSerial = HardwareSerialWrapper(&Serial1);
-    void receiveState(const byte* body);
     void processPacket();
+    template<typename T>
+    void receive(const byte* body);
 
 public:
     SerialNetwork();
+    void requestInitData();
     void requestState();
+    void requestTemperatures();
 };
 
 #endif
