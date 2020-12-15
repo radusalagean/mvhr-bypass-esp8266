@@ -62,7 +62,7 @@ void Socket::send(InitData* initData)
 template <>
 void Socket::send(State* state)
 {
-    const int capacity = JSON_OBJECT_SIZE(3 + STATE_NUM_OF_FIELDS);
+    const int capacity = JSON_OBJECT_SIZE(2 + STATE_NUM_OF_FIELDS);
     JsonObject root = StaticJsonDocument<capacity>().to<JsonObject>();
     root[SOCKET_KEY_EVENT] = SOCKET_EVENT_RESPONSE_STATE;
     JsonObject dataObj = root.createNestedObject(SOCKET_KEY_DATA);
@@ -73,7 +73,7 @@ void Socket::send(State* state)
 template <>
 void Socket::send(Temperatures* temperatures)
 {
-    const int capacity = JSON_OBJECT_SIZE(3 + TEMPERATURES_NUM_OF_FIELDS);
+    const int capacity = JSON_OBJECT_SIZE(2 + TEMPERATURES_NUM_OF_FIELDS);
     JsonObject root = StaticJsonDocument<capacity>().to<JsonObject>();
     root[SOCKET_KEY_EVENT] = SOCKET_EVENT_RESPONSE_TEMPERATURES;
     JsonObject dataObj = root.createNestedObject(SOCKET_KEY_DATA);
