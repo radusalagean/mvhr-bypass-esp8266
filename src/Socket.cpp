@@ -48,11 +48,13 @@ void Socket::prepareTemperaturesJsonObject(JsonObject& obj, Temperatures* temper
 template <>
 void Socket::send(InitData* initData)
 {
-    const int capacity = JSON_OBJECT_SIZE(2 + STATE_NUM_OF_FIELDS + TEMPERATURES_NUM_OF_FIELDS);
+    const int capacity = JSON_OBJECT_SIZE(4 + STATE_NUM_OF_FIELDS + TEMPERATURES_NUM_OF_FIELDS);
     JsonObject root = StaticJsonDocument<capacity>().to<JsonObject>();
-    JsonObject stateObj = root.createNestedObject(STATE_KEY);
+    root[SOCKET_KEY_EVENT] = SOCKET_EVENT_RESPONSE_INIT_DATA;
+    JsonObject dataObj = root.createNestedObject(SOCKET_KEY_DATA);
+    JsonObject stateObj = dataObj.createNestedObject(SOCKET_KEY_STATE);
     prepareStateJsonObject(stateObj, &initData->state);
-    JsonObject temperaturesObj = root.createNestedObject(TEMPERATURES_KEY);
+    JsonObject temperaturesObj = dataObj.createNestedObject(SOCKET_KEY_TEMPERATURES);
     prepareTemperaturesJsonObject(temperaturesObj, &initData->temperatures);
     send(root);
 }
@@ -60,18 +62,22 @@ void Socket::send(InitData* initData)
 template <>
 void Socket::send(State* state)
 {
-    const int capacity = JSON_OBJECT_SIZE(STATE_NUM_OF_FIELDS);
+    const int capacity = JSON_OBJECT_SIZE(3 + STATE_NUM_OF_FIELDS);
     JsonObject root = StaticJsonDocument<capacity>().to<JsonObject>();
-    prepareStateJsonObject(root, state);
+    root[SOCKET_KEY_EVENT] = SOCKET_EVENT_RESPONSE_STATE;
+    JsonObject dataObj = root.createNestedObject(SOCKET_KEY_DATA);
+    prepareStateJsonObject(dataObj, state);
     send(root);
 }
 
 template <>
 void Socket::send(Temperatures* temperatures)
 {
-    const int capacity = JSON_OBJECT_SIZE(TEMPERATURES_NUM_OF_FIELDS);
+    const int capacity = JSON_OBJECT_SIZE(3 + TEMPERATURES_NUM_OF_FIELDS);
     JsonObject root = StaticJsonDocument<capacity>().to<JsonObject>();
-    prepareTemperaturesJsonObject(root, temperatures);
+    root[SOCKET_KEY_EVENT] = SOCKET_EVENT_RESPONSE_TEMPERATURES;
+    JsonObject dataObj = root.createNestedObject(SOCKET_KEY_DATA);
+    prepareTemperaturesJsonObject(dataObj, temperatures);
     send(root);
 }
 
@@ -87,12 +93,7 @@ void Socket::webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t
     {
         IPAddress ip = webSocket.remoteIP(num);
         Serial1.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
-
-        // send message to client
-        webSocket.sendTXT(num, "Connected");
-
         clientNum = num;
-
         serialNetwork->requestInitData();
         break;
     }

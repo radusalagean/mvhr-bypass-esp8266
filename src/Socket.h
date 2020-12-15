@@ -1,10 +1,14 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 
+//https://arduinojson.org/v6/how-to/configure-the-serialization-of-floats/
+#define ARDUINOJSON_NEGATIVE_EXPONENTIATION_THRESHOLD 1e-9
+
 #include "ArduinoJson.h"
 #include "lib/mvhr-bypass-common/arduino-esp8266/State.h"
 #include "lib/mvhr-bypass-common/arduino-esp8266/InitData.h"
 #include <WebSocketsServer.h>
+#include "SocketContract.h"
 
 class Socket;
 
