@@ -11,58 +11,55 @@ void SerialNetwork::processPacket()
     switch (transmissionPacket.code)
     {
     case LOCAL_CONTRACT_CODE_RESPONSE_INIT_DATA:
-        receive<InitData>(transmissionPacket.bodyPtr);
+        processPacketBodyObject<InitData>();
         break;
     case LOCAL_CONTRACT_CODE_RESPONSE_STATE:
-        receive<State>(transmissionPacket.bodyPtr);
+        processPacketBodyObject<State>();
         break;
     case LOCAL_CONTRACT_CODE_RESPONSE_TEMPERATURES:
-        receive<Temperatures>(transmissionPacket.bodyPtr);
+        processPacketBodyObject<Temperatures>();
         break;
-
     default:
         break;
     }
 }
 
 template<typename T>
-void SerialNetwork::receive(const byte* body)
+void SerialNetwork::processPacketBodyObject()
 {
-    size_t size = sizeof(T);
-    T* ptr = new T;
-    memcpy(ptr, body, size);
-    Socket::send(ptr);
-    delete ptr;
+    T* t = receivePacketBodyObject<T>();
+    Socket::send(t);
+    delete t;
 }
 
 // REQUEST
 
 void SerialNetwork::requestInitData()
 {
-    TransmissionPacket packet = {LOCAL_CONTRACT_CODE_REQUEST_INIT_DATA};
-    sendPacket(packet);
+    send(LOCAL_CONTRACT_CODE_REQUEST_INIT_DATA);
 }
 
 void SerialNetwork::requestHrModeAuto()
 {
-    TransmissionPacket packet = {LOCAL_CONTRACT_CODE_REQUEST_HR_MODE_AUTO};
-    sendPacket(packet);
+    send(LOCAL_CONTRACT_CODE_REQUEST_HR_MODE_AUTO);
 }
 
 void SerialNetwork::requestHrModeManual()
 {
-    TransmissionPacket packet = {LOCAL_CONTRACT_CODE_REQUEST_HR_MODE_MANUAL};
-    sendPacket(packet);
+    send(LOCAL_CONTRACT_CODE_REQUEST_HR_MODE_MANUAL);
 }
 
 void SerialNetwork::requestEnableHr()
 {
-    TransmissionPacket packet = {LOCAL_CONTRACT_CODE_REQUEST_ENABLE_HR};
-    sendPacket(packet);
+    send(LOCAL_CONTRACT_CODE_REQUEST_ENABLE_HR);
 }
 
 void SerialNetwork::requestDisableHr()
 {
-    TransmissionPacket packet = {LOCAL_CONTRACT_CODE_REQUEST_DISABLE_HR};
-    sendPacket(packet);
+    send(LOCAL_CONTRACT_CODE_REQUEST_DISABLE_HR);
+}
+
+void SerialNetwork::requestApplyStateTemperatures(State* state)
+{
+    send(LOCAL_CONTRACT_CODE_REQUEST_APPLY_STATE_TEMPERATURES, state);
 }

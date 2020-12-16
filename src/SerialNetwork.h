@@ -15,7 +15,7 @@ private:
     HardwareSerialWrapper debugLineSerial = HardwareSerialWrapper(&Serial1);
     void processPacket();
     template<typename T>
-    void receive(const byte* body);
+    void processPacketBodyObject();
 
 public:
     SerialNetwork();
@@ -24,6 +24,7 @@ public:
     void requestHrModeManual();
     void requestEnableHr();
     void requestDisableHr();
+    void requestApplyStateTemperatures(State* state);
 };
 
 #endif

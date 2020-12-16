@@ -114,6 +114,17 @@ void Socket::webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t
                 serialNetwork->requestEnableHr();
             else if (strcmp(event, SOCKET_EVENT_REQUEST_DISABLE_HR) == 0)
                 serialNetwork->requestDisableHr();
+            else if (strcmp(event, SOCKET_EVENT_REQUEST_APPLY_STATE_TEMPERATURES) == 0) 
+            {
+                JsonObject stateJson = doc[SOCKET_KEY_DATA];
+                State* state = new State;
+                state->intEvMin = stateJson["intEvMin"];
+                state->extAdMin = stateJson["extAdMin"];
+                state->extAdMax = stateJson["extAdMax"];
+                state->hysteresis = stateJson["hysteresis"];
+                serialNetwork->requestApplyStateTemperatures(state);
+                delete[] state;
+            }
         }
         break;
     case WStype_BIN:
