@@ -43,14 +43,26 @@ void SerialNetwork::requestInitData()
     sendPacket(packet);
 }
 
-void SerialNetwork::requestState()
+void SerialNetwork::requestHrModeAuto()
 {
-    TransmissionPacket packet = {LOCAL_CONTRACT_CODE_REQUEST_STATE};
+    TransmissionPacket packet = {LOCAL_CONTRACT_CODE_REQUEST_HR_MODE_AUTO};
     sendPacket(packet);
 }
 
-void SerialNetwork::requestTemperatures()
+void SerialNetwork::requestHrModeManual()
 {
-    TransmissionPacket packet = {LOCAL_CONTRACT_CODE_REQUEST_TEMPERATURES};
+    TransmissionPacket packet = {LOCAL_CONTRACT_CODE_REQUEST_HR_MODE_MANUAL};
+    sendPacket(packet);
+}
+
+void SerialNetwork::requestEnableHr()
+{
+    TransmissionPacket packet = {LOCAL_CONTRACT_CODE_REQUEST_ENABLE_HR};
+    sendPacket(packet);
+}
+
+void SerialNetwork::requestDisableHr()
+{
+    TransmissionPacket packet = {LOCAL_CONTRACT_CODE_REQUEST_DISABLE_HR};
     sendPacket(packet);
 }

@@ -83,6 +83,9 @@ void Socket::send(Temperatures* temperatures)
 
 void Socket::webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length)
 {
+    DeserializationError err;
+    const int capacity = JSON_OBJECT_SIZE(4 + STATE_NUM_OF_FIELDS + TEMPERATURES_NUM_OF_FIELDS);
+    StaticJsonDocument<capacity> doc;
     switch (type)
     {
     case WStype_DISCONNECTED:
@@ -99,12 +102,19 @@ void Socket::webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t
     }
     case WStype_TEXT:
         Serial1.printf("[%u] get Text: %s\n", num, payload);
-
-        // send message to client
-        // webSocket.sendTXT(num, "message here");
-
-        // send data to all connected clients
-        // webSocket.broadcastTXT("message here");
+        err = deserializeJson(doc, payload);
+        if (!err)
+        {
+            const char* event = doc[SOCKET_KEY_EVENT];
+            if (strcmp(event, SOCKET_EVENT_REQUEST_HR_MODE_AUTO) == 0)
+                serialNetwork->requestHrModeAuto();
+            else if (strcmp(event, SOCKET_EVENT_REQUEST_HR_MODE_MANUAL) == 0)
+                serialNetwork->requestHrModeManual();
+            else if (strcmp(event, SOCKET_EVENT_REQUEST_ENABLE_HR) == 0)
+                serialNetwork->requestEnableHr();
+            else if (strcmp(event, SOCKET_EVENT_REQUEST_DISABLE_HR) == 0)
+                serialNetwork->requestDisableHr();
+        }
         break;
     case WStype_BIN:
         Serial1.printf("[%u] get binary length: %u\n", num, length);

@@ -20,8 +20,10 @@ private:
 public:
     SerialNetwork();
     void requestInitData();
-    void requestState();
-    void requestTemperatures();
+    void requestHrModeAuto();
+    void requestHrModeManual();
+    void requestEnableHr();
+    void requestDisableHr();
 };
 
 #endif
