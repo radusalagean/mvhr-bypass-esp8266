@@ -10,6 +10,7 @@
 #define SOCKET_EVENT_RESPONSE_INIT_DATA "response_init_data"
 #define SOCKET_EVENT_RESPONSE_STATE "response_state"
 #define SOCKET_EVENT_RESPONSE_TEMPERATURES "response_temperatures"
+#define SOCKET_EVENT_RESPONSE_CONNECTION_BUSY "response_connection_busy"
 
 // Socket client -> ESP
 #define SOCKET_EVENT_REQUEST_HR_MODE_AUTO "request_hr_mode_auto"

@@ -1,7 +1,6 @@
 #include "Socket.h"
 
 WebSocketsServer Socket::webSocket = WebSocketsServer(WEB_SOCKET_SERVER_PORT);
-int Socket::clientNum = -1;
 SerialNetwork* Socket::serialNetwork;
 
 void Socket::init(SerialNetwork* serialNetwork)
@@ -18,7 +17,7 @@ void Socket::loop()
 
 // SEND
 
-void Socket::send(JsonObject& root)
+void Socket::send(JsonObject& root, const int clientNum)
 {
     int outputLength = measureJson(root);
     char* jsonString = new char[outputLength + 1];
@@ -43,6 +42,14 @@ void Socket::prepareTemperaturesJsonObject(JsonObject& obj, Temperatures* temper
     obj["extAd"] = temperatures->extAd;
     obj["intAd"] = temperatures->intAd;
     obj["intEv"] = temperatures->intEv;
+}
+
+void Socket::send(const char* eventName, const int clientNum)
+{
+    const int capacity = JSON_OBJECT_SIZE(1);
+    JsonObject root = StaticJsonDocument<capacity>().to<JsonObject>();
+    root[SOCKET_KEY_EVENT] = eventName;
+    send(root, clientNum);
 }
 
 template <>
@@ -90,13 +97,17 @@ void Socket::webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t
     {
     case WStype_DISCONNECTED:
         Serial1.printf("[%u] Disconnected!\n", num);
-        clientNum = -1;
         break;
     case WStype_CONNECTED:
     {
+        if (num != 0)
+        {
+            send(SOCKET_EVENT_RESPONSE_CONNECTION_BUSY, num);
+            webSocket.disconnect(num);
+            return;
+        }
         IPAddress ip = webSocket.remoteIP(num);
         Serial1.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
-        clientNum = num;
         serialNetwork->requestInitData();
         break;
     }
