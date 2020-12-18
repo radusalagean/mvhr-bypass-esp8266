@@ -140,10 +140,6 @@ void Socket::webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t
         break;
     case WStype_BIN:
         Serial1.printf("[%u] get binary length: %u\n", num, length);
-        hexdump(payload, length);
-
-        // send message to client
-        // webSocket.sendBIN(num, payload, length);
         break;
     }
 }
