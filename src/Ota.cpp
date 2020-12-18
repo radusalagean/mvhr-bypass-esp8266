@@ -6,8 +6,6 @@ void Ota::init()
 
     ArduinoOTA.setHostname(OTA_HOSTNAME);
 
-    //    ArduinoOTA.setPassword(OTA_PASS);
-
     ArduinoOTA.onStart([]() {
         String type;
         if (ArduinoOTA.getCommand() == U_FLASH) {
